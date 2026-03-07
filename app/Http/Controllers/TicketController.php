@@ -6,6 +6,8 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
 
 /**
  * TicketController
@@ -62,7 +64,7 @@ class TicketController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreTicketRequest $request): RedirectResponse
     {
         // Validasi input
         // Jika gagal, otomatis redirect back dengan error messages
@@ -100,7 +102,7 @@ class TicketController extends Controller
         // Jika tidak ditemukan, otomatis return 404
         
         // Load relasi user
-        $ticket->load('user');
+        $ticket->load('user', 'comments.user');
 
         return view('tickets.show', compact('ticket'));
     }
@@ -127,7 +129,7 @@ class TicketController extends Controller
      * @param Ticket $ticket
      * @return RedirectResponse
      */
-    public function update(Request $request, Ticket $ticket): RedirectResponse
+    public function update(UpdateTicketRequest $request, Ticket $ticket): RedirectResponse
     {
         // Validasi input
         $validated = $request->validate([
