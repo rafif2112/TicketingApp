@@ -298,9 +298,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
 
         // call user seeder
-        $this->call([
-            UserSeeder::class,
-            TicketSeeder::class
-        ]);
+        // $this->call([
+        //     UserSeeder::class,
+        //     TicketSeeder::class
+        // ]);
     }
 }

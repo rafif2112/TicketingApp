@@ -3,6 +3,8 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CsrfLabController;
 use App\Http\Controllers\DemoBladeController;
+use App\Http\Controllers\Lab\SecureController;
+use App\Http\Controllers\Lab\VulnerableController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SecurityTestController;
 use App\Http\Controllers\SqliLabController;
@@ -85,8 +87,6 @@ Route::middleware('auth')->group(function () {
 // MINGGU 4 HARI 2: Authorization Implementation
 // ============================================
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Lab\SecureController;
-use App\Http\Controllers\Lab\VulnerableController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     // Admin Dashboard - Overview statistics
@@ -465,6 +465,10 @@ Route::prefix('vulnerable')->name('vulnerable.')->group(function () {
         ->name('brute-force-stats');
 });
 
+// ============================================================================
+// BAC/IDOR Lab Routes (Minggu 4 Hari 4 - Broken Access Control)
+// ============================================================================
+
 // Public routes (tidak perlu login untuk baca materi)
 Route::prefix('bac-lab')->name('bac-lab.')->group(function () {
 
@@ -529,6 +533,14 @@ Route::middleware('auth')->prefix('bac-lab')->name('bac-lab.')->group(function (
             ->parameters(['tickets' => 'ticket']);
     });
 });
+
+// ============================================================================
+// Error Handling Demo (Minggu 5 Hari 2 - Error Handling & Information Disclosure)
+// ============================================================================
+
+Route::get('/error-handling-demo', function () {
+    return view('error-handling-demo.index');
+})->name('error-handling-demo');
 
 // ============================================================================
 // Secure Auth Routes (Laravel Breeze)
