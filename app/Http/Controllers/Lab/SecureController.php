@@ -27,22 +27,6 @@ class SecureController extends Controller
     use AuthorizesRequests;
 
     /**
-     * Constructor - Register policy untuk semua resource actions
-     *
-     * ✅ authorizeResource() akan otomatis memanggil:
-     * - viewAny() untuk index
-     * - view() untuk show
-     * - create() untuk create/store
-     * - update() untuk edit/update
-     * - delete() untuk destroy
-     */
-    public function __construct()
-    {
-        // ✅ SECURE: Otomatis authorization untuk semua action
-        $this->authorizeResource(Ticket::class, 'ticket');
-    }
-
-    /**
      * Tampilkan tickets (SECURE)
      *
      * ✅ SOLUSI: Filter berdasarkan role
@@ -51,6 +35,9 @@ class SecureController extends Controller
      */
     public function index()
     {
+        // ✅ SECURE: Authorization via Policy viewAny()
+        $this->authorize('viewAny', Ticket::class);
+
         $user = auth()->user();
 
         // ✅ SECURE: Query berdasarkan role
@@ -70,12 +57,12 @@ class SecureController extends Controller
      *
      * ✅ SOLUSI:
      * - Route model binding otomatis resolve Ticket
-     * - Policy view() dipanggil otomatis via authorizeResource
+     * - Policy view() dipanggil secara eksplisit
      */
     public function show(Ticket $ticket)
     {
-        // ✅ Authorization sudah di-handle oleh authorizeResource
-        // Jika user tidak berhak, akan otomatis 403 Forbidden
+        // ✅ SECURE: Authorization via Policy view()
+        $this->authorize('view', $ticket);
 
         $ticket->load('user');
 
@@ -87,7 +74,8 @@ class SecureController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        // ✅ Authorization via Policy update() - otomatis
+        // ✅ SECURE: Authorization via Policy update()
+        $this->authorize('update', $ticket);
 
         return view('bac-lab.secure.tickets.edit', compact('ticket'));
     }
@@ -99,7 +87,8 @@ class SecureController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        // ✅ Authorization via Policy update() - otomatis
+        // ✅ SECURE: Authorization via Policy update()
+        $this->authorize('update', $ticket);
 
         // Validasi input
         $validated = $request->validate([
@@ -130,8 +119,8 @@ class SecureController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        // ✅ Authorization via Policy delete() - otomatis
-        // Hanya admin yang bisa delete (didefinisikan di Policy)
+        // ✅ SECURE: Authorization via Policy delete()
+        $this->authorize('delete', $ticket);
 
         $ticket->delete();
 
